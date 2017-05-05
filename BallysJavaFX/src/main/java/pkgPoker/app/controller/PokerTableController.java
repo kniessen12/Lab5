@@ -100,7 +100,6 @@ public class PokerTableController implements Initializable {
 	public void GetGameState() {
 	}
 
-	// TODO: Lab #4 - Complete (fix) setiPlayerPosition
 	public void btnSitLeave_Click(ActionEvent event) {
 
 		ToggleButton btn = (ToggleButton) event.getSource();
@@ -116,15 +115,19 @@ public class PokerTableController implements Initializable {
 		case "btnPos1SitLeave":
 			if (eAct == eAction.Sit) {
 				mainApp.getPlayer().setiPlayerPosition(1);
+				btnPos2SitLeave.setVisible(false);
 			} else {
 				mainApp.getPlayer().setiPlayerPosition(0);
+				btnPos2SitLeave.setVisible(true);
 			}
 			break;
 		case "btnPos2SitLeave":
 			if (eAct == eAction.Sit) {
 				mainApp.getPlayer().setiPlayerPosition(2);
+				btnPos1SitLeave.setVisible(false);
 			} else {
 				mainApp.getPlayer().setiPlayerPosition(0);
+				btnPos1SitLeave.setVisible(true);
 			}
 			break;
 		}
@@ -185,12 +188,14 @@ public class PokerTableController implements Initializable {
 		btnPos1SitLeave.setText("Sit");
 		btnPos2SitLeave.setText("Sit");
 
-		if (HubPokerTable.getHmPlayer().size()> 0)
+		if (HubPokerTable.getHmPlayer().size()> 1)
 		{
 			btnPos1SitLeave.setVisible(false);
 			btnPos2SitLeave.setVisible(false);
 		}
-
+		
+		boolean bothVacant = true;
+		
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
 			Player p = (Player) pair.getValue();
@@ -198,12 +203,15 @@ public class PokerTableController implements Initializable {
 			if (p.getiPlayerPosition() == 1) {
 				lblPlayerPos1.setText(p.getPlayerName());
 				btnPos1SitLeave.setText("Leave");
-
+				bothVacant = false;
 			} else if (p.getiPlayerPosition() == 2) {
 				lblPlayerPos2.setText(p.getPlayerName());
 				btnPos2SitLeave.setText("Leave");
+				bothVacant = false;
 			}
 
+
+			
  			ToggleButton btnSitLeave = getSitLeave(p.getiPlayerPosition());
 
 			if (p.getiPokerClientID() == mainApp.getPlayer().getiPokerClientID()) {
@@ -212,8 +220,22 @@ public class PokerTableController implements Initializable {
 
 			} else {
 				btnSitLeave.setVisible(false);
+				if (btnSitLeave == btnPos1SitLeave && btnPos2SitLeave.isVisible() == false)
+				{
+					btnPos2SitLeave.setVisible(true);
+				}
+				else if (btnSitLeave == btnPos2SitLeave && btnPos1SitLeave.isVisible() == false)
+				{
+					btnPos1SitLeave.setVisible(true);
+				}
 			} 
 
+		}
+		
+		if (bothVacant)
+		{
+			btnPos1SitLeave.setVisible(true);
+			btnPos2SitLeave.setVisible(true);
 		}
 
 	}

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import netgame.common.Hub;
 import pkgPokerBLL.Action;
@@ -69,23 +70,77 @@ public class PokerHub extends Hub {
 			case StartGame:
 				// Get the rule from the Action object.
 				Rule rle = new Rule(act.geteGame());
+				Player dealer = actPlayer;
 				
 				//TODO Lab #5 - If neither player has 'the button', pick a random player
-				//		and assign the button.				
+				//		and assign the button.		
+				
 
 				//TODO Lab #5 - Start the new instance of GamePlay
+				
+				HubGamePlay = new GamePlay(rle, dealer.getPlayerID());
+				
+				for (Player p : HubPokerTable.getHmPlayer().values()){
+					
+					HubGamePlay.addPlayerToGame(p);
+				}
 								
 				// Add Players to Game
 				
 				// Set the order of players
+				
+				HubGamePlay.setiActOrder(GamePlay.GetOrder(dealer.getiPlayerPosition()));
+				
+				act.setAction(eAction.Draw);
 				
 
 
 			case Draw:
 
 				//TODO Lab #5 -	Draw card(s) for each player in the game.
-				//TODO Lab #5 -	Make sure to set the correct visiblity
+				//TODO Lab #5 -	Make sure to set the correct visibility
 				//TODO Lab #5 -	Make sure to account for community cards
+				
+				this.iDealNbr+=1;
+				
+				for(int i = 1; i <= rle.GetMaxDrawCount(); i++ ){
+					
+					if(i == 1) {
+						
+						rle.GetDrawCard(eDrawCount.FIRST);
+					HubGamePlay.seteDrawCountLast(eDrawCount.SECOND);
+					}
+					
+					else if(i == 2) {
+						rle.GetDrawCard(eDrawCount.SECOND);
+					HubGamePlay.seteDrawCountLast(eDrawCount.THIRD);
+					}
+					
+					else if(i == 3) {
+						rle.GetDrawCard(eDrawCount.THIRD);
+					HubGamePlay.seteDrawCountLast(eDrawCount.FOURTH);
+					}
+					
+					else if(i == 4) {
+						
+						rle.GetDrawCard(eDrawCount.FOURTH);
+					HubGamePlay.seteDrawCountLast(eDrawCount.FIFTH);
+					
+					}
+					
+					else if(i == 5) {
+						
+						rle.GetDrawCard(eDrawCount.FIFTH);
+					HubGamePlay.seteDrawCountLast(eDrawCount.SIXTH);
+					}
+					
+					else {
+						
+						rle.GetDrawCard(eDrawCount.SIXTH);
+					HubGamePlay.seteDrawCountLast(eDrawCount.SEVENTH);
+					
+					}
+				}
 
 				//TODO Lab #5 -	Check to see if the game is over
 				HubGamePlay.isGameOver();
