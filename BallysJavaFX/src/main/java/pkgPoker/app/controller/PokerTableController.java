@@ -25,6 +25,7 @@ import pkgPoker.app.MainApp;
 import pkgPokerEnum.eAction;
 import pkgPokerEnum.eGame;
 import pkgPokerBLL.Action;
+import pkgPokerBLL.Card;
 import pkgPokerBLL.GamePlay;
 import pkgPokerBLL.Player;
 import pkgPokerBLL.Table;
@@ -241,7 +242,46 @@ public class PokerTableController implements Initializable {
 	}
 
 	public void Handle_GameState(GamePlay HubPokerGame) {
-
+		
+		hboxP1Cards.getChildren().clear();
+		hboxP2Cards.getChildren().clear();
+		hboxCommunity.getChildren().clear();
+		
+		for(Player p:HubPokerGame.getGamePlayers().values()) {
+			
+			for(Card c:HubPokerGame.getPlayerHand(p).getCardsInHand()) {
+				
+				if(p.getPlayerID().equals(mainApp.getPlayer().getPlayerID())) {
+					
+					if(p.getiPlayerPosition()==1) {
+						
+						hboxP1Cards.getChildren().add(BuildImage(c.getiCardNbr()));
+					}
+					
+					else if(p.getiPlayerPosition()==2) {
+						
+					}
+						hboxP2Cards.getChildren().add(BuildImage(c.getiCardNbr()));
+				}
+				
+				else{
+				
+					if(p.getiPlayerPosition()==1) {
+						
+						hboxP1Cards.getChildren().add(BuildImage(0));
+					}
+					
+					else if(p.getiPlayerPosition()==2){
+						hboxP2Cards.getChildren().add(BuildImage(0));
+					}
+				}
+			}
+			
+			for(Card c:HubPokerGame.getGameCommonHand().getCardsInHand()) {
+				
+				hboxCommunity.getChildren().add(BuildImage(c.getiCardNbr()));
+			}
+		}
 	}
 
 	private ImageView BuildImage(int iCardNbr) {
